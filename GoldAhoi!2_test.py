@@ -1,3 +1,11 @@
+# treasure_box = [
+#     0, 1, 2,
+#     3, 4, 5,
+#     6, 7, 8
+# ]
+
+# treasure_box : 宝箱の位置を表す属性(0~8)
+
 class Tile: 
     def __init__(self, id, nw, n, ne, w, center, e, sw, s, se, tb, player): 
         self.identification = id # 主キー的なやつ
@@ -18,93 +26,139 @@ class Tile:
         # __init__の情報をprintするためのコード
         return f"Tile(id={self.identification},\n{self.north_west, self.north, self.north_east}\n{self.west, self.center, self.east}\n{self.south_west, self.south, self.south_east}, \n{self.treasure_box}, \n{self.player}, \n{self.adjacency})\n"
 
+class TileFactory:
+    _next_id = 0
+    
+    @classmethod
+    def create(cls, treasure_box = None, player = None) :
+        tile_id = cls._next_id
+        cls._next_id += 1
+        
+        return Tile(
+            tile_id,
+            *shape,
+            treasure_box,
+            player
+        )
+
+tile_map = {
+    "island" : [
+        0, 0, 0,
+        0, 0, 0,
+        0, 0, 0
+    ],
+    "straight" : [
+        0, 0, 0,
+        1, 1, 1,
+        0, 0, 0
+    ],
+    "diagonal" : [
+        0, 0, 0,
+        1, 0, 0,
+        1, 1, 0
+    ], 
+    "double_diagonal" : [
+        0, 1, 1,
+        1, 0, 0,
+        1, 1, 0
+    ],
+    "t" : [
+        0, 0, 0,
+        1, 1, 1, 
+        0, 1, 0
+    ], 
+    "cross" : [
+        0, 1, 0,
+        1, 1, 1, 
+        0, 1, 0
+    ]
+}
+
 
 tile_list = []
+
+shape = tile_map["island"]
 
 for i in range(1):
     tile_island = Tile(
                 i, # id
-                0, 0, 0,
-                0, 0, 0,
-                0, 0, 0,
-                None, # treasure_box
+                *shape,
+                4, # treasure_box
                 None # player
             )
             # リストに追加
     tile_list.append(tile_island)
 
+shape = tile_map["straight"]
+
 for i in range(1, 2 + 1):
     tile_straight = Tile(
                 i, # id
-                0, 0, 0,
-                1, 1, 1,
-                0, 0, 0,
-                None, # treasure_box
+                *shape,
+                4, # treasure_box
                 None # player
             )
             # リストに追加
     tile_list.append(tile_straight)
 
+shape = tile_map["diagonal"]
+
 for i in range(3, 3 + 4):
     tile_diagonal = Tile(
                 i, # id
-                0, 0, 0,
-                1, 0, 0,
-                1, 1, 0,
-                None, # treasure_box
+                *shape,
+                4, # treasure_box
                 None # player
             )
             # リストに追加
     tile_list.append(tile_diagonal)
 
+shape = tile_map["double_diagonal"]
+
 for i in range(7, 7 + 9):
     tile_double_diagonal = Tile(
                 i, # id
-                0, 1, 1,
-                1, 0, 1,
-                1, 1, 0,
-                None, # treasure_box
+                *shape,
+                4, # treasure_box
                 None # player
             )
             # リストに追加
     tile_list.append(tile_double_diagonal)
     
+shape = tile_map["t"]
+
 for i in range(16, 16 + 8):
     tile_t_tresure_land = Tile(
                 i, # id
-                0, 0, 0,
-                1, 1, 1,
-                0, 1, 0,
-                None, # treasure_box
+                *shape,
+                4, # treasure_box
                 None # player
             )
             # リストに追加
     tile_list.append(tile_t_tresure_land)    
+
+shape = tile_map["t"]
 
 for i in range(24, 24 + 4):
     tile_t_tresure_land = Tile(
                 i, # id
-                0, 0, 0,
-                1, 1, 1,
-                0, 1, 0,
-                None, # treasure_box
+                *shape, 
+                1, # treasure_box
                 None # player
             )
             # リストに追加
     tile_list.append(tile_t_tresure_land)    
 
+shape = tile_map["cross"]
+
 for i in range(28, 28 + 8):
     tile_cross = Tile(
                 i, # id
-                0, 1, 0,
-                1, 1, 1,
-                0, 1, 0,
-                None, # treasure_box
+                *shape, 
+                4, # treasure_box
                 None # player
             )
             # リストに追加
-    tile_list.append(tile_cross)    
+    tile_list.append(tile_cross)
 
 print(tile_list)
-
-# test
