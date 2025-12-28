@@ -1,133 +1,88 @@
-# treasure_box = [
-#     0, 1, 2,
-#     3, 4, 5,
-#     6, 7, 8
-# ]
-
-# treasure_box : 宝箱の位置を表す属性(0~8)
-
-class Tile: 
-    def __init__(self, id, shape, tb, player): 
-        self.identification = id # 主キー(0~35)
-        self.shape = shape # 地形(0 : 海, 1 : 陸)
-        self.treasure_box = tb # 宝箱の位置(0~8)
-        self.player = player # どちらのプレイヤーが置いたか(0 : player1, 1 : player2)
-        self.adjacency = None # プレイヤー側(端)と隣接しているか(0~8)
+class Tile:
+    def __init__(self, id, terrain, tb, player, edge):
+        self.id = id # 主キー(0~35)
+        self.terrain = terrain # 地形
+        self.tb = tb # 宝箱の位置(0~8)
+        self.player = player # どちらのplayerが置いたか(0, 1)
+        self.edge = edge # player1, 2側の端と接触している部分
 
     def __repr__(self):
-        # __init__の情報をprintするためのコード
-        s = self.shape
         return (
-            f"Tile(id = {self.identification})\n"
-            f"{s[0], s[1], s[2]}\n"
-            f"{s[3], s[4], s[5]}\n"
-            f"{s[6], s[7], s[8]}\n"
-            f"treasure = {self.treasure_box}\n"
-            f"player = {self.player}\n"
-            f"adjencency = {self.adjacency}"
+            f'''
+            Tile(id={self.id}),\n 
+            terrain={self.terrain},\n
+            tb={self.tb},\n
+            player={self.player},\n
+            edge={self.edge}\n
+            '''
         )
-
-class TileFactory:
-    def __init__(self, tile_map):
-        self._next_id = 0
-        self.tile_map = tile_map
     
-    def create(self, tile_type, treasure_box = None, player = None) :
-        tile = Tile(
-            id=self._next_id,
-            shape=self.tile_map[tile_type].copy(),
-            tb=treasure_box,
-            player=player
-        )
-        self._next_id += 1
-        
-        return tile
-
-class Board:
-    size = 6
-    
-    def __init__(self):
-        self.grid = [[None for i in range(self.size)] for j in range(self.size)]
-
-    def __repr__(self):
-        lines = []
-        for row in self.grid:
-            lines.append(
-                " ".join("." if t is None else "T" for t in row)
-            )
-        return "\n".join(lines)
-
-    def place_tile(self, row, col, tile):
-        self.grid[row][col] = tile
-        
-    def get_tile(self, row, col):
-        return self.grid[row][col]
-    
-    def is_inside(self, row, col):
-        return 0 <= row < self.size and 0 <= col < self.size
-    
-    def is_edge(self, row, col):
-        return row == 0 or row == self.size - 1 or col == 0 or col == self.size - 1
-
-tile_map = {
-    "island" : [
+terrain_data = {
+    # 名前 : (地形, 個数, 宝箱の位置)
+    "island" : ([
         0, 0, 0,
         0, 0, 0,
         0, 0, 0
-    ],
-    "straight" : [
+    ], 1, 4),
+    "straight" : ([
         0, 0, 0,
         1, 1, 1,
         0, 0, 0
-    ],
-    "diagonal" : [
+    ], 2, 4), 
+    "diagonal" : ([
         0, 0, 0,
         1, 0, 0,
         1, 1, 0
-    ], 
-    "double_diagonal" : [
+    ], 4, 4),
+    "dpuble_diagonal" : ([
         0, 1, 1,
-        1, 0, 0,
+        1, 0, 1,
         1, 1, 0
-    ],
-    "t" : [
+    ], 9, 4),
+    "t_tb_land" : ([
         0, 0, 0,
-        1, 1, 1, 
+        1, 1, 1,
         0, 1, 0
-    ], 
-    "cross" : [
+    ], 8, 4),
+    "t_tb_sea" : ([
+        0, 0, 0,
+        1, 1, 1,
+        0, 1, 0
+    ], 4, 1),
+    "cross" : ([
         0, 1, 0,
-        1, 1, 1, 
+        1, 1, 1,
         0, 1, 0
-    ]
+    ], 8, 4)
 }
 
-tile_defs = [
-    # tile名, 枚数, 宝箱の位置
-    ("island", 1, 4),
-    ("straight", 2, 4),
-    ("diagonal", 4, 4),
-    ("double_diagonal", 9, 4),
-    ("t", 8, 4),
-    ("t", 4, 1),
-    ("cross", 8, 4)
+tile_list = []
+tile_id = 0
+
+# 疑似コード
+for name, (terrain, count, tb) in terrain_data.items():
+    for _ in range(count):
+        tile = Tile(
+            id = tile_id, 
+            terrain = terrain, 
+            tb = tb, 
+            player=None, 
+            edge = None
+            )
+        tile_id += 1
+        tile_list.append(tile)
+
+print(tile_list)
+
+'''
+terrainのイメージ
+0 : 海, 1 : 陸
+terrain = [
+    0, 0, 0,
+    1, 1, 1,
+    0, 0, 0
 ]
 
-tile_list = []
-
-factory = TileFactory(tile_map)
-board = Board()
-
-for tile_type, count, treasure in tile_defs:
-    for _ in range(count):
-        tile_list.append(
-            factory.create(
-                tile_type=tile_type,
-                treasure_box=treasure
-            )
-        )
-    
-tile = factory.create("straight", treasure_box=4, player=0)
-board.place_tile(2, 3, tile)
-
-print(board)
+edgeのイメージ
+edge = [0, 1, 2]([6, 7, 8])
+'''
