@@ -87,7 +87,7 @@ for col in range(6):
         
 print(board)
 
-'''+
+'''
 terrainのイメージ
 0 : 海, 1 : 陸
 terrain = [
