@@ -1,3 +1,5 @@
+import random
+
 class Tile:
     def __init__(self, id, terrain, tb, player, edge):
         self.id = id # 主キー(0~35)
@@ -63,18 +65,29 @@ tile_id = 0
 for name, (terrain, count, tb) in terrain_data.items():
     for _ in range(count):
         tile = Tile(
-            id = tile_id, 
-            terrain = terrain, 
-            tb = tb, 
-            player=None, 
+            id = tile_id,
+            terrain = terrain,
+            tb = tb,
+            player=None,
             edge = None
             )
         tile_id += 1
         tile_list.append(tile)
 
-print(tile_list)
+board = [[' ' for i in range(6)] for j in range(6)]
 
-'''
+random.shuffle(tile_list)
+
+cnt = 0
+
+for col in range(6):
+    for row in range(6):
+        board[col][row] = tile_list[cnt]
+        cnt += 1
+        
+print(board)
+
+'''+
 terrainのイメージ
 0 : 海, 1 : 陸
 terrain = [
