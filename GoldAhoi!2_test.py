@@ -82,9 +82,16 @@ cnt = 0
 
 for col in range(6):
     for row in range(6):
-        board[col][row] = tile_list[cnt]
+        if (cnt % 2 == 0) :
+            tile_list[cnt].player=1
+        else :
+            tile_list[cnt].player=2
+        if (tile_list[cnt].player == 1):
+            board[col][row] = tile_list[cnt]
+        else :
+            board[5 - col][5 - row] = tile_list[cnt]
         cnt += 1
-        
+
 print(board)
 
 '''
